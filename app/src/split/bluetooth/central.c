@@ -83,8 +83,8 @@ static uint8_t split_central_notify_func(struct bt_conn *conn,
     return BT_GATT_ITER_CONTINUE;
 }
 
-static int split_central_subscribe(struct bt_conn *conn) {
-    int err = bt_gatt_subscribe(conn, &subscribe_params);
+static int split_central_subscribe(struct bt_conn *conn, struct bt_gatt_subscribe_params *params) {
+    int err = bt_gatt_subscribe(conn, params);
     switch (err) {
     case -EALREADY:
         LOG_DBG("[ALREADY SUBSCRIBED]");
@@ -142,7 +142,7 @@ static uint8_t split_central_discovery_func(struct bt_conn *conn, const struct b
         subscribe_params.value = BT_GATT_CCC_NOTIFY;
         subscribe_params.ccc_handle = attr->handle;
 
-        split_central_subscribe(conn);
+        split_central_subscribe(conn, &subscribe_params);
 
         return BT_GATT_ITER_STOP;
     }
