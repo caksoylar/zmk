@@ -45,6 +45,8 @@ jobs:
           - kyria_right
           - lily58_left
           - lily58_right
+          - lotus58_left
+          - lotus58_right
           - microdox_left
           - microdox_right
           - nibble
