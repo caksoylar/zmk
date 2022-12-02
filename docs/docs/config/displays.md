@@ -22,6 +22,9 @@ Definition files:
 | `CONFIG_ZMK_WIDGET_BATTERY_STATUS_SHOW_PERCENTAGE` | bool | If battery widget is enabled, show percentage instead of icons | n       |
 | `CONFIG_ZMK_WIDGET_OUTPUT_STATUS`                  | bool | Enable a widget to show the current output (USB/BLE)           | y       |
 | `CONFIG_ZMK_WIDGET_WPM_STATUS`                     | bool | Enable a widget to show words per minute                       | n       |
+| `CONFIG_ZMK_WIDGET_MODS_STATUS`                    | bool | Enable a widget to show active modifiers                       | n       |
+
+Note that WPM and modifiers widgets are both shown on the bottom right of the display and hence can conflict with each other.
 
 If `CONFIG_ZMK_DISPLAY` is enabled, exactly zero or one of the following options must be set to `y`. The first option is used if none are set.
 
