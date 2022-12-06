@@ -1,0 +1,2 @@
+zephyr_library_sources(cards_images.c)
+zephyr_library_sources(status_screen.c)
