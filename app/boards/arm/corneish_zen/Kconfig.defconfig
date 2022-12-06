@@ -36,15 +36,7 @@ config USB_DEVICE_STACK
 endif # USB
 
 config ZMK_DISPLAY
-    select LV_USE_CONT
-    select LV_FONT_MONTSERRAT_26
-    select LV_FONT_MONTSERRAT_16
-    select LV_USE_LABEL
-    select LV_USE_IMG
-
-choice ZMK_DISPLAY_STATUS_SCREEN
-    default ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
-endchoice
+    default y
 
 if ZMK_DISPLAY
 
@@ -64,39 +56,67 @@ config HEAP_MEM_POOL_SIZE
  config LV_Z_MEM_POOL_SIZE
      default 4096
 
-endif # ZMK_DISPLAY
+choice ZMK_DISPLAY_STATUS_SCREEN
+    default ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
 
-menuconfig CUSTOM_WIDGET_BATTERY_STATUS
+endchoice
+
+choice ZEN_STATUS_SCREEN
+    prompt "Status screen layout"
+
+config ZEN_STATUS_SCREEN_STOCK
+    bool "Stock Zen status screen"
+    select LV_USE_CONT
+    select LV_FONT_MONTSERRAT_26
+    select LV_FONT_MONTSERRAT_16
+    select LV_USE_LABEL
+    select LV_USE_IMG
+
+config ZEN_STATUS_SCREEN_8BIT
+    bool "8-bit playing cards themed status screen"
+    select LV_USE_LABEL
+    select LV_USE_IMG
+    select LV_USE_LINE
+
+endchoice # ZEN_STATUS_SCREEN
+
+if ZEN_STATUS_SCREEN_STOCK
+
+config CUSTOM_WIDGET_BATTERY_STATUS
     bool "custom battery status widget"
 
-menuconfig CUSTOM_WIDGET_OUTPUT_STATUS
+config CUSTOM_WIDGET_OUTPUT_STATUS
     bool "custom output status widget"
 
-menuconfig CUSTOM_WIDGET_LAYER_STATUS
+config CUSTOM_WIDGET_LAYER_STATUS
     bool "custom layer status widget"
 
-menuconfig CUSTOM_WIDGET_PERIPHERAL_STATUS
+config CUSTOM_WIDGET_PERIPHERAL_STATUS
     bool "custom peripheral status widget"
 
 config CUSTOM_WIDGET_LAYER_STATUS_HIDE_HEADING
-	bool "Hide heading strip for layer widget and center widgets on 1/3rds"
+    bool "Hide heading strip for layer widget and center widgets on 1/3rds"
 
 choice CUSTOM_WIDGET_LOGO_IMAGE
-	prompt "custom logo widget image"
+    prompt "custom logo widget image"
 
-	config CUSTOM_WIDGET_LOGO_IMAGE_ZEN
-		bool "Corne-ish Zen"
+    config CUSTOM_WIDGET_LOGO_IMAGE_ZEN
+        bool "Corne-ish Zen"
 
-	config CUSTOM_WIDGET_LOGO_IMAGE_LPKB
-		bool "LPKB"
+    config CUSTOM_WIDGET_LOGO_IMAGE_LPKB
+        bool "LPKB"
 
-	config CUSTOM_WIDGET_LOGO_IMAGE_ZMK
-		bool "ZMK"
+    config CUSTOM_WIDGET_LOGO_IMAGE_ZMK
+        bool "ZMK"
 
-	config CUSTOM_WIDGET_LOGO_IMAGE_MIRYOKU
-		bool "Miryoku"
+    config CUSTOM_WIDGET_LOGO_IMAGE_MIRYOKU
+        bool "Miryoku"
 
 endchoice
+
+endif # ZEN_STATUS_SCREEN_STOCK
+
+endif # ZMK_DISPLAY
 
 endif # BOARD_CORNEISH_ZEN_LEFT || BOARD_CORNEISH_ZEN_RIGHT
 
