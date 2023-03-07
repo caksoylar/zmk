@@ -91,14 +91,23 @@ static void output_status_update_cb(struct output_status_state state) {
             break;
         }
         lv_img_set_src(suit_tl, profile_suit);
+#if !IS_ENABLED(CONFIG_ZEN_STATUS_SCREEN_8BIT_HALF)
         lv_img_set_src(suit_br, profile_suit_r);
+#endif
     }
+#if IS_ENABLED(CONFIG_ZEN_STATUS_SCREEN_8BIT_HALF)
+    if (first_run) {
+        lv_img_set_src(suit_br, &heart);
+    }
+#endif
 
     switch (state.selected_transport) {
     case ZMK_TRANSPORT_USB:
         if (first_run || prev_state.selected_transport != ZMK_TRANSPORT_USB) {
             lv_img_set_src(rank_tl, &usb);
+#if !IS_ENABLED(CONFIG_ZEN_STATUS_SCREEN_8BIT_HALF)
             lv_img_set_src(rank_br, &usb_r);
+#endif
         }
         break;
     case ZMK_TRANSPORT_BLE:
@@ -107,16 +116,27 @@ static void output_status_update_cb(struct output_status_state state) {
             state.active_profile_bonded != prev_state.active_profile_bonded) {
             if (state.active_profile_bonded && state.active_profile_connected) {
                 lv_img_set_src(rank_tl, &j_logo);
+#if !IS_ENABLED(CONFIG_ZEN_STATUS_SCREEN_8BIT_HALF)
                 lv_img_set_src(rank_br, &j_logo_r);
+#endif
             } else if (state.active_profile_bonded) {
                 lv_img_set_src(rank_tl, &excl);
+#if !IS_ENABLED(CONFIG_ZEN_STATUS_SCREEN_8BIT_HALF)
                 lv_img_set_src(rank_br, &excl_r);
+#endif
             } else {
                 lv_img_set_src(rank_tl, &question);
+#if !IS_ENABLED(CONFIG_ZEN_STATUS_SCREEN_8BIT_HALF)
                 lv_img_set_src(rank_br, &question_r);
+#endif
             }
         }
     }
+#if IS_ENABLED(CONFIG_ZEN_STATUS_SCREEN_8BIT_HALF)
+    if (first_run) {
+        lv_img_set_src(rank_br, &j_logo_r);
+    }
+#endif
     first_run = false;
     prev_state = state;
 }
@@ -138,10 +158,14 @@ static struct peripheral_status_state get_state(const zmk_event_t *_eh) {
 static void peripheral_status_update_cb(struct peripheral_status_state state) {
     if (state.connected) {
         lv_img_set_src(rank_tl, &q_logo);
+#if !IS_ENABLED(CONFIG_ZEN_STATUS_SCREEN_8BIT_HALF)
         lv_img_set_src(rank_br, &q_logo_r);
+#endif
     } else {
         lv_img_set_src(rank_tl, &excl);
+#if !IS_ENABLED(CONFIG_ZEN_STATUS_SCREEN_8BIT_HALF)
         lv_img_set_src(rank_br, &excl_r);
+#endif
     }
 }
 
@@ -196,6 +220,9 @@ lv_obj_t *zmk_display_status_screen() {
     lv_img_set_src(card_img, &queen_masked);
     lv_img_set_src(suit_tl, &spade);
     lv_img_set_src(suit_br, &heart);
+#if IS_ENABLED(CONFIG_ZEN_STATUS_SCREEN_8BIT_HALF)
+    lv_img_set_src(rank_br, &q_logo_r);
+#endif
 
     widget_peripheral_status_init();
 #endif
