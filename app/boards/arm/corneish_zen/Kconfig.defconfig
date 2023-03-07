@@ -116,6 +116,13 @@ endchoice
 
 endif # ZEN_STATUS_SCREEN_STOCK
 
+if ZEN_STATUS_SCREEN_8BIT
+
+config ZEN_STATUS_SCREEN_8BIT_HALF
+	bool "Update only top half of status screen"
+
+endif # ZEN_STATUS_SCREEN_8BIT
+
 endif # ZMK_DISPLAY
 
 endif # BOARD_CORNEISH_ZEN_LEFT || BOARD_CORNEISH_ZEN_RIGHT
