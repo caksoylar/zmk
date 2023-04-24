@@ -54,7 +54,7 @@ int zmk_widget_mods_status_init(struct zmk_widget_mods_status *widget, lv_obj_t 
     widget->obj = lv_label_create(parent);
     lv_obj_set_style_text_align(widget->obj, LV_TEXT_ALIGN_RIGHT, 0);
 
-    lv_obj_set_size(widget->obj, 40, 15);
+    lv_obj_set_size(widget->obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
 
     sys_slist_append(&widgets, &widget->node);
 
