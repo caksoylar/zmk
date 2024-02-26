@@ -8,8 +8,15 @@ set(ZEPHYR_EXTRA_MODULES "${ZMK_EXTRA_MODULES};${CMAKE_CURRENT_SOURCE_DIR}/modul
 find_package(Zephyr REQUIRED HINTS ../zephyr)
 project(zmk)
 
+if(CONFIG_ZMK_SLEEP)
+  zephyr_linker_sources(SECTIONS include/linker/zmk-pm-devices.ld)
+endif()
+
 zephyr_linker_sources(SECTIONS include/linker/zmk-behaviors.ld)
 zephyr_linker_sources(RODATA include/linker/zmk-events.ld)
+
+zephyr_syscall_header(${APPLICATION_SOURCE_DIR}/include/drivers/behavior.h)
+zephyr_syscall_header(${APPLICATION_SOURCE_DIR}/include/drivers/ext_power.h)
 
 # Add your source file to the "app" target. This must come after
 # find_package(Zephyr) which defines the target.
