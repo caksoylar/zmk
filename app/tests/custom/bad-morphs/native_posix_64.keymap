@@ -1,0 +1,89 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+    #define THUMB_LAYERTAP(NAME, BINDINGS) \
+         NAME: NAME { \
+            compatible = "zmk,behavior-hold-tap"; \
+            #binding-cells = <2>; \
+            tapping-term-ms = <QUICK_TAP_TERM>; \
+            flavor = "tap-preferred"; \
+            quick-tap-ms = <0>; \
+            bindings = <&mo>, <BINDINGS>; \
+        };
+
+    #define THUMB_MACRO(NAME, BINDINGS) \
+        NAME: NAME { \
+            compatible = "zmk,behavior-macro"; \
+            #binding-cells = <0>; \
+            wait-ms = <10>; \
+            tap-ms = <10>; \
+            bindings = <&macro_tap BINDINGS>; \
+        };
+
+    #define THUMB_MORPH(NAME, MODS, MODDED, UNMODDED) \
+        NAME: NAME { \
+            compatible = "zmk,behavior-mod-morph"; \
+            #binding-cells = <0>; \
+            bindings = <UNMODDED>, <MODDED>; \
+            mods = <(MODS)>; \
+        };
+
+    #define THUMB_COMBO_MORPH(NAME, FIRST_MOD, SECOND_MOD, IF_BOTH, OR_ELSE) \
+        NAME##_CHECK_SECOND: NAME##_CHECK_SECOND { \
+            compatible = "zmk,behavior-mod-morph"; \
+            #binding-cells = <0>; \
+            bindings = <OR_ELSE>, <IF_BOTH>; \
+            mods = <(SECOND_MOD)>; \
+        }; \
+        NAME: NAME { \
+            compatible = "zmk,behavior-mod-morph"; \
+            #binding-cells = <0>; \
+            bindings = <OR_ELSE>, <&NAME##_CHECK_SECOND>; \
+            mods = <(FIRST_MOD)>; \
+        };
+
+        THUMB_MACRO(tc_shift_camel     ,  &to 1 &sl 1)
+        THUMB_MACRO(tc_strong_snakecase,  &tog 1 &tog 1)
+        THUMB_MACRO(tc_strong_kebabcase,  &tog 1 &tog 1)
+        THUMB_MACRO(tc_strong_slashcase,  &tog 1 &tog 1)
+
+        //THUMB_MORPH(sc_caps_word,  MOD_LCTL, &terminated_caps_word , &msl_a2 RAISE 0)
+        //THUMB_MORPH(sc_caps_lock,  MOD_RCTL, &terminated_caps_lock , &sc_caps_word   )
+        //THUMB_MORPH(sc_numpad,     MOD_LALT, &to LOWER             , &sc_caps_lock   )
+        //THUMB_MORPH(sc_numword,    MOD_RALT, &tc_num_word          , &sc_numpad      )
+        THUMB_MORPH(sc_numpad,     MOD_LALT, &to 1        , &caps_word   )
+        THUMB_MORPH(sc_numword,    MOD_RALT, &caps_word   , &sc_numpad      )
+        THUMB_MORPH(sc_camelcase,  MOD_LSFT, &to 1        , &sc_numword     )
+        THUMB_MORPH(sc_snakecase,  MOD_LGUI, &to 1        , &sc_camelcase   )
+        THUMB_MORPH(sc_kebabcase,  MOD_RGUI, &to 1        , &sc_snakecase   )
+        THUMB_MORPH(sc_slashcase,  MOD_RSFT, &to 1        , &sc_kebabcase   )
+
+        THUMB_COMBO_MORPH(sc_pascalcase       , MOD_LCTL, MOD_LSFT, &tc_shift_camel     , &sc_slashcase)
+        THUMB_COMBO_MORPH(sc_strong_snake_case, MOD_LCTL, MOD_LGUI, &tc_strong_snakecase, &sc_pascalcase)
+        THUMB_COMBO_MORPH(sc_strong_kebab_case, MOD_RCTL, MOD_RGUI, &tc_strong_kebabcase, &sc_strong_snake_case)
+        THUMB_COMBO_MORPH(sc_strong_slash_case, MOD_RCTL, MOD_RSFT, &tc_strong_slashcase, &sc_strong_kebab_case)
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+            &sc_strong_slash_case    &kp LCTRL
+            &kp RSHIFT    &kp LGUI>;
+        };
+        extra_layer {
+            bindings = <
+            &none &none
+            &none &none>;
+        };
+    };
+};
+
+&kscan {
+    events = <
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_RELEASE(0,0,10)
+    >;
+};
