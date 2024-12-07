@@ -6,8 +6,8 @@ manifest:
       url-base: https://github.com/zmkfirmware
   projects:
     - name: zephyr
-      remote: zephyr
-      revision: v3.7.0
+      remote: zephyrproject-rtos
+      revision: v4.0.0
       clone-depth: 1
       import:
         name-blocklist:
@@ -18,7 +18,6 @@ manifest:
           - hal_microchip
           - hal_nxp
           - hal_openisa
-          - hal_silabs
           - hal_xtensa
           - hal_st
           - hal_ti
