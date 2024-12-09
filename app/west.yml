@@ -4,6 +4,8 @@ manifest:
       url-base: https://github.com/zephyrproject-rtos
     - name: zmkfirmware
       url-base: https://github.com/zmkfirmware
+    - name: ajf58
+      url-base: https://github.com/ajf58
   projects:
     - name: zephyr
       remote: zephyrproject-rtos
