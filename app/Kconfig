@@ -705,7 +705,7 @@ rsource "boards/shields/*/Kconfig.shield"
 # Duplicated from Kconfig.zephyr
 osource "$(KCONFIG_BINARY_DIR)/Kconfig.shield.defconfig"
 
-source "$(BOARD_DIR)/Kconfig.defconfig"
+# source "$(BOARD_DIR)/Kconfig.defconfig"
 
 # This loads board and shield Kconfigs found under zmk-config/config/
 osource "$(ZMK_CONFIG)/boards/shields/*/Kconfig.defconfig"
