@@ -17,7 +17,7 @@ First, we'll adjust the existing SRAM node to shrink it by one byte so Zephyr wi
 ```dts
 /* Reduce SRAM0 usage by 1 byte to account for non-init area */
 &sram0 {
-        reg = <0x20000000 0x3FFF>;
+    reg = <0x20000000 0x3FFF>;
 };
 ```
 
@@ -43,15 +43,11 @@ Note:
             #size-cells = <1>;
 
             retention0: retention@0 {
-                    compatible = "zephyr,retention";
-                    status = "okay";
-                    reg = <0x0 0x1>;
+                compatible = "zephyr,retention";
+                status = "okay";
+                reg = <0x0 0x1>;
             };
-       };
-    };
-
-    chosen {
-        zephyr,boot-mode = &retention0;
+        };
     };
 };
 ```

@@ -15,7 +15,7 @@ For TinyUF2, we'll first adjust the SRAM to ensure Zephyr does not overwrite the
 
 ```dts
 &sram0 {
-        reg = <0x20000000 0x1FFFC>;
+    reg = <0x20000000 0x1FFFC>;
 };
 ```
 
@@ -24,29 +24,29 @@ Note:
 - The `0x20000000` address is the address of the RAM for the target. This is nearly always `0x20000000`
 - The exact value of `0x1FFFC` will depend on the total RAM on the target. The value should be the total RAM, minus 4-bytes, in hex
 
-## Add a new memory region node, with retainer RAM placed within it:
+## Add a New Memory Region Node with Retainer RAM
 
 ```dts
 / {
-        sram@2001FFFC {
-                compatible = "zephyr,memory-region", "mmio-sram";
-                reg = <0x2001FFFC 0x4>;
-                zephyr,memory-region = "RetainedMem";
+    sram@2001FFFC {
+        compatible = "zephyr,memory-region", "mmio-sram";
+        reg = <0x2001FFFC 0x4>;
+        zephyr,memory-region = "RetainedMem";
+        status = "okay";
+
+        retainedmem {
+            compatible = "zephyr,retained-ram";
+            status = "okay";
+            #address-cells = <1>;
+            #size-cells = <1>;
+
+            magic_retention: retention@0 {
+                compatible = "zephyr,retention";
                 status = "okay";
-
-                retainedmem {
-                        compatible = "zephyr,retained-ram";
-                        status = "okay";
-                        #address-cells = <1>;
-                        #size-cells = <1>;
-
-                        magic_retention: retention@0 {
-                                compatible = "zephyr,retention";
-                                status = "okay";
-                                reg = <0x0 0x4>;
-                        };
-                };
+                reg = <0x0 0x4>;
+            };
         };
+    };
 };
 ```
 
@@ -61,19 +61,19 @@ Next, we'll set up our mapping retained mem driver, which will map from the Zeph
 
 ```dts
 / {
-        magic_mapper {
-                compatible = "zmk,bootmode-to-magic-mapper";
-                status = "okay";
+    magic_mapper {
+        compatible = "zmk,bootmode-to-magic-mapper";
+        status = "okay";
 
-                #address-cells = <1>;
-                #size-cells = <1>;
+        #address-cells = <1>;
+        #size-cells = <1>;
 
-                boot_retention: retention@0 {
-                        compatible = "zephyr,retention";
-                        status = "okay";
-                        reg = <0x0 0x1>;
-                };
+        boot_retention: retention@0 {
+            compatible = "zephyr,retention";
+            status = "okay";
+            reg = <0x0 0x1>;
         };
+    };
 };
 ```
 
