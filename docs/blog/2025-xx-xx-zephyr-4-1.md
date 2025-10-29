@@ -10,7 +10,7 @@ We're happy to announce that after a long wait, ZMK's `main` branch is now runni
 
 Zephyr 4.1 is a large leap forward from our previous version of 3.5, featuring:
 
-- Support for lots of new SoCs, boards, and shields, such as the WCH CH32V003, the Raspberry Pi Pico 2, and [many many more](https://docs.zephyrproject.org/4.1.0/boards/index.html#boards=).
+- Support for lots of new SoCs, boards, and shields, such as the WCH CH32V003, the Raspberry Pi Pico 2, and [many many more](https://docs.zephyrproject.org/4.1.0/boards/index.html#boards).
 - Hardware Model V2 (HWMv2), providing better support for SoCs which have multiple cores on the same chip, such as the nRF5340.
 - Lots of new drivers for chips such as the nPM1300.
 
@@ -95,7 +95,7 @@ From there, you should be ready to build as normal!
 
 ## Moving To HWMv2
 
-The move to HWMv2 has already been completed for all boards in ZMK's `main` branch. For out-of-tree boards, those need to be converted using either an automated script provided by the Zephyr project, or manually
+The move to HWMv2 has already been completed for all boards in ZMK's `main` branch. For out-of-tree boards, those need to be converted using either an automated script provided by the Zephyr project, or manually.
 
 ### Board Upgrade Script
 
@@ -103,18 +103,18 @@ The Zephyr project provides a script to automate updating a board to HWMv2. To r
 
 The following parameters are relevant for out-of-tree boards:
 
-- `--board-root </the/path/to/the/module/` - the full path to the module directory that contains a `boards/` directory, e.g. `/home/peter/git/my-zmk-module/`.
-- `-b <board_id>` - The board ID to update, e.g. `tenbit`.
-- `-v <vendor_id>` - The vendor for the board, this should be a vendor ID, or designer nickname.
-- `-g <group_id>` - The name of the group directory under which to place the new board files. Typically this will match the vendor ID.
-- `-s <soc_id>` - The SoC identifier, e.g. `nrf52840`, `rp2040`, `stm32f411xe`.
+- `--board-root </the/path/to/the/module/` -- the full path to the module directory that contains a `boards/` directory, e.g. `/home/peter/git/my-zmk-module/`.
+- `-b <board_id>` -- The board ID to update, e.g. `tenbit`.
+- `-v <vendor_id>` -- The vendor for the board, this should be a vendor ID, or designer nickname.
+- `-g <group_id>` -- The name of the group directory under which to place the new board files. Typically this will match the vendor ID.
+- `-s <soc_id>` -- The SoC identifier, e.g. `nrf52840`, `rp2040`, `stm32f411xe`.
 
 For example:
 
 ```sh
 $ python3 zmk/zephyr/scripts/utils/board_v1_to_v2.py \
     --board-root my-zmk-module -b my_board \
-    -v my_group -g my_group -s nrf52840
+    -v my_company -g my_group -s nrf52840
 ```
 
 ### Migrating an Out-Of-Tree Board Manually
@@ -123,11 +123,11 @@ The following steps can be completed manually if you encounter issues with the u
 
 #### Vendor Directory
 
-Boards no longer need to live in a parent directory named after the architecture of the board (.e.g `boards/arm`), and should instead be placed in a vendor/designer named directory (e.g. `boards/mycompany`).
+Boards no longer need to live in a parent directory named after the architecture of the board (.e.g `boards/arm`), and should instead be placed in a vendor/designer named directory (e.g. `boards/my_company`).
 
 #### Write a `board.yml`
 
-In your board's folder, next to other files such as `<your_board>.dts`, add a file called `board.yml`. The contents of this file should have the following shape:
+In your board's folder, next to other files such as `<your_board>.dts`, add a file called `board.yml`. This file should have the following structure:
 
 ```yml title="board.yml"
 board:
@@ -156,7 +156,7 @@ board:
 In the above:
 
 - `<board-name>` is the name of the board as specified when selecting a build target, such as `nice_nano`.
-- `<vendor-name` is the name of the board's vendor, such as `nicekeyboards`. If you are an individual, rather than acting as an organisation, please use your name/online id/similar (e.g. `zhiayang` in the case of the `mikoto`).
+- `<vendor-name>` is the name of the board's vendor, such as `nicekeyboards`. If you are an individual, rather than acting as an organization, please use your name/online id/similar (e.g. `zhiayang` in the case of the `mikoto`). This value should match the vendor directory name that the board definition folder is placed in the previous section.
 - `revision` defines any board revisions. See [Zephyr's overview](https://docs.zephyrproject.org/4.1.0/hardware/porting/board_porting.html#multiple-board-revisions) for more information on board revisions. If your board does not have any revisions, you can omit this section.
 - `socs` lists all SoCs that your board could have, e.g. `nrf52840` or `stm32f072xb`. If your board only has one SoC available and no variants, then the SoC can be omitted when selecting a build target, but must still be specified in this file. For an understanding of SoC variants, refer to the Zephyr documentation.
 
@@ -170,15 +170,11 @@ boards:
    ...
 ```
 
-#### Move Your Board Folder
+#### Revision adjustments
 
-Previously, your board folder should have had a filepath similar to `boards/arm/<board>`. Move your board to `boards/<vendor>/<board>`, where `<vendor>` matches the vendor specified in `board.yml`.
+If, as a side effect of adding revisions, you renamed the board (e.g. `ferris_rev02` -> `ferris`), you should adjust the other places where the board name was previously -- `<board>.zmk.yml` and `<board>.yaml`. You may also need to rearrange/consolidate other Kconfig flags and devicetree nodes. See [the Zephyr documentation](https://docs.zephyrproject.org/latest/hardware/porting/board_porting.html#multiple-board-revisions) for more details.
 
-#### Revision Adjustments
-
-If, as a side effect of adding revisions, you renamed the board (e.g. `ferris_rev02` -> `ferris`), you should adjust the other places where the board name was previously - `<board>.zmk.yml` and `<board>.yaml`. You may also need to rearrange/consolidate other Kconfig flags and devicetree nodes. See [the Zephyr documentation](https://docs.zephyrproject.org/latest/hardware/porting/board_porting.html#multiple-board-revisions) for more details.
-
-#### Adjust Kconfig Files
+#### Adjust Kconfig files
 
 ##### `Kconfig.<board>`
 
@@ -219,7 +215,7 @@ CONFIG_SOC_SERIES_STM32F0X=y
 CONFIG_SOC_STM32F072XB=y
 ```
 
-#### DeviceTree Changes
+#### DeviceTree changes
 
 For most boards, aside from rearranging due to moving to revisions, there should be no changes necessary to the devicetree nodes. However, if your board makes use of upstream Zephyr drivers, these may have been renamed (e.g. Ferris' `microchip,mcp230xx` has been changed to `microchip,mcp23017`).
 
@@ -229,17 +225,17 @@ A few other changes, unrelated to the HWMv2 move, may impact out-of-tree boards/
 
 ### Bootloader Setup
 
-With the version bump, the previous method to enable `&bootloader` has been disabled. Instead, ZMK is introducing _boot retention_, which as a side effect also enables `&bootloader` for SoCs which previously didn't work with said behavior, such as the STM32F072. To set up boot retention for your board, please read through [the dedicated page](/docs/development/hardware-integration/bootloader).
+With the version bump, the previous method to enable `&bootloader` has been disabled. Instead, ZMK is introducing _boot retention_, which as a side effect also enables `&bootloader` for SoCs which previously didn't work with said behavior, such as the STM32F072. To set up boot retention for your board, please read through [the dedicated page](/docs/development/hardware-integration/bootloader). No changes are needed for shields.
 
 ### nRF52840 NFC Pins as GPIO
 
-If your board or shield is using either of the nRF52840 NFC pins, as is often done with the XIAO nRF52840, you'll need to migrate an additional piece.
+If your board or shield is using either of the nRF52840 NFC pins, as is often done with the XIAO nRF52840, you'll need to perform an additional update.
 
 #### Remove deprecated Kconfig symbol
 
 Previously, using those pins required enabling `CONFIG_NFCT_PINS_AS_GPIOS=y` in some Kconfig file. That Kconfig symbol has been removed, so remove any use of that Kconfig symbol from your board/shield.
 
-#### Set Up NFC GPIO devicetree
+#### Set up NFC GPIO devicetree
 
 The following should be added to the board or shield's devicetree, e.g. in `<board>.dtsi` or in a board specific shield overlay file like `<my_shield>/boards/xiao_ble.overlay`:
 
@@ -297,7 +293,7 @@ For both high voltage and non-HV boards, where the necessary inductor is connect
 
 A few small tweaks are required for custom/out-of-tree RP2040 based boards:
 
-#### Clock Control
+#### Clock control
 
 RP2040 boards now require clock control enabled to use several peripherals, including USB.
 
@@ -307,7 +303,7 @@ The following should be added to the board's `<board>_defconfig` file:
 CONFIG_CLOCK_CONTROL=y
 ```
 
-#### Base devicetree Changes
+#### Base devicetree changes
 
 The location for the base set of devicetree these boards need to include has changed. In the board's `<board>.dts` file, replace:
 
@@ -335,7 +331,7 @@ And the following added, to set up the core device hardware properly:
 
 ```dts
 &timer {
-  status = "okay";
+    status = "okay";
 };
 
 &rtc {
@@ -349,16 +345,16 @@ And the following added, to set up the core device hardware properly:
 };
 ```
 
-Lastly, an additiinal property must be added to the `chosen` node to supplement the existing properties there:
+Lastly, an additional property must be added to the `chosen` node to supplement the existing properties there:
 
 ```dts
 / {
-  chosen {
-    ...
-    zephyr,flash-controller = &ssi;
-    ...
-  };
-}
+    chosen {
+        ...
+        zephyr,flash-controller = &ssi;
+        ...
+    };
+};
 ```
 
 ### LED Strip Kconfig Changes
@@ -369,17 +365,17 @@ If your board or shield uses RGB underglow, the following Kconfig flag which was
 CONFIG_WS2812_STRIP=y
 ```
 
-If this is the only SPI device your shield uses, also remove the Kconfig flag enabling SPI (assuming it is present). It will be automatically re-enabled.
+If this is the only SPI device your shield uses, also remove the Kconfig flag enabling SPI (assuming it is present). It will be automatically enabled.
 
 ### Cirque Pinnacle Input Driver
 
 Upstream Zephyr now contains a driver for the popular small Cirque Pinnacle trackpads. To transition to the new upstream driver, instead of the [out-of-tree module](https://github.com/petejohanson/cirque-input-module), some small adjustments are needed.
 
-#### Remove Module References
+#### Remove module references
 
 Often, the out-of-tree module is referenced from the `west.yml` in user's repos. The entry pointing to the module should be removed from your `projects` list there. If building locally, be sure you are not adding the module directory to the `ZMK_EXTRA_MODULES` CMake parameter.
 
-#### devicetree Changes
+#### Devicetree changes
 
 The properties for the upstream driver can be found [here](https://docs.zephyrproject.org/4.1.0/build/dts/api/bindings/input/cirque%2Cpinnacle-i2c.html#dtbinding-cirque-pinnacle-i2c). The following changes are required when migrating:
 
